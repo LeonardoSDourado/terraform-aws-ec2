@@ -60,5 +60,5 @@ resource "aws_instance" "ec2_linuxtips" {
   vpc_security_group_ids = [aws_security_group.sg_linuxtips.id]
   tags = var.ec2_tags
   user_data = var.user_data
-  iam_instance_profile = aws_iam_role.linuxtips_ec2_ssm_role.arn
+  iam_instance_profile = aws_iam_role.linuxtips_ec2_ssm_role.name
 }
