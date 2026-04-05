@@ -37,13 +37,17 @@ variable "user_data" {
   description = "User data"
 }
 
+variable "role_name" {
+  type = string
+  description = "Role name for EC2 SSM"
+}
+
+variable "ssm_policy" {
+  type = string
+  description = "Policy attached to EC2 SSM Role"
+}
+
 variable "ami" {
   type = string
   description = "Amazon Machine Image ID"
-}
-
-variable "iam_instance_profile" {
-  type = string
-  default = null
-  description = "Instance profile"
 }

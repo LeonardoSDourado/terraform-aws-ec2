@@ -28,6 +28,30 @@ resource "aws_vpc_security_group_egress_rule" "allow_egress" {
   description       = each.value["description"]
 }
 
+resource "aws_iam_role" "linuxtips_ec2_ssm_role" {
+  name = var.role_name
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "linuxtips_ec2_ssm_attachment" { 
+  role = aws_iam_role.linuxtips_ec2_ssm_role.name
+  policy_arn = var.ssm_policy
+}
 resource "aws_instance" "ec2_linuxtips" {
   ami           = var.ami
   instance_type = "t3.micro"
@@ -36,5 +60,5 @@ resource "aws_instance" "ec2_linuxtips" {
   vpc_security_group_ids = [aws_security_group.sg_linuxtips.id]
   tags = var.ec2_tags
   user_data = var.user_data
-  iam_instance_profile = var.iam_instance_profile
+  iam_instance_profile = aws_iam_role.linuxtips_ec2_ssm_role.arn
 }
