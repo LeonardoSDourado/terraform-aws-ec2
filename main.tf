@@ -52,6 +52,12 @@ resource "aws_iam_role_policy_attachment" "linuxtips_ec2_ssm_attachment" {
   role = aws_iam_role.linuxtips_ec2_ssm_role.name
   policy_arn = var.ssm_policy
 }
+
+resource "aws_iam_instance_profile" "linuxtips_ec2_profile" {
+  name = var.role_name
+  role = aws_iam_role.linuxtips_ec2_ssm_role.name
+}
+
 resource "aws_instance" "ec2_linuxtips" {
   ami           = var.ami
   instance_type = "t3.micro"
@@ -60,5 +66,5 @@ resource "aws_instance" "ec2_linuxtips" {
   vpc_security_group_ids = [aws_security_group.sg_linuxtips.id]
   tags = var.ec2_tags
   user_data = var.user_data
-  iam_instance_profile = aws_iam_role.linuxtips_ec2_ssm_role.name
+  iam_instance_profile = aws_iam_instance_profile.linuxtips_ec2_profile.name
 }
